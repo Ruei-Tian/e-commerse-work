@@ -16,11 +16,7 @@ export default {
   name: 'Navbar',
   data() {
     return {
-      messages: [{
-        message: '',
-        status: '',
-        timestamp: '',
-      }],
+      messages: [],
     };
   },
   methods: {
@@ -49,14 +45,10 @@ export default {
   },
   created() {
     const vm = this;
+    //$on 監聽事件
     vm.$bus.$on('message:push', (message, status = 'warning') => {
-        vm.updateMessage(message, status);
+    vm.updateMessage(message, status);
     });
-
-    // 自定義名稱 'messsage:push'
-    // message: 傳入參數
-    // status: 樣式，預設值為 warning    
-    // vm.$bus.$emit('message:push');
   },
 };
 </script>

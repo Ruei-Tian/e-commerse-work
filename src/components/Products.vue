@@ -1,6 +1,6 @@
 <template>
     <div>
-        <loading :active.sync="isLoading"></loading>
+      <loading :active.sync="isLoading"></loading>
       <div class="text-right">
             <button class="btn btn-primary mt-5" @click="openModal(true)">建立新產品</button>
       </div>
@@ -20,10 +20,10 @@
            <td>{{ item.category }}</td>
            <td>{{ item.title }}</td>
            <td class="text-right">
-              {{ item.origin_price }}
+              {{ item.origin_price | currency}}
            </td>
            <td class="text-right">
-              {{ item.price }}
+              {{ item.price | currency}}
            </td>
            <td>
               <span v-if="item.is_enabled" class="text-success">啟用</span>
@@ -37,6 +37,7 @@
             
         </tbody>    
       </table> 
+       <Pagination :pagination='paginations' @renewPage = "getProducts"></Pagination>
       <!-- Modal -->
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -161,11 +162,14 @@
 
 <script>
 import $ from 'jquery'
+import Pagination from '@/components/Pagination.vue'
+
 export default {
     data() {
         return {
             products:[],
             tempProduct: {},
+            paginations:{},
             isNew: false,
             isLoading: false,
             status: {
@@ -173,15 +177,19 @@ export default {
             }
         }
     },
+    components: {
+        Pagination,
+    },
     methods: {
-        getProducts() {
-            const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products`;
+        getProducts(page) {            
+            const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products?page=${page}`;
             const vm = this;
             vm.isLoading = true;
             this.$http.get(api).then((response) => {
             console.log(response.data);
-            vm.isLoading = false;
             vm.products = response.data.products;
+            vm.isLoading = false;
+            vm.paginations = response.data.pagination;            
             })
         },
         openModal(isNew, item) {
@@ -205,7 +213,7 @@ export default {
             vm.status.fileUploading = true;
             this.$http.post(api, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form0data'
+                    'Content-Type': 'multipart/form-data'
                 }
             }).then((response) => {
                 console.log(response.data); 
@@ -214,6 +222,7 @@ export default {
                   //需使用 set 強制 vue 雙向綁定檔案網址                 
                   vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
                 } else {
+                  //$emit 觸發事件
                   vm.$bus.$emit('message:push',response.data.message, status = 'danger')
                 }
                 
