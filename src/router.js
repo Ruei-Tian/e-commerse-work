@@ -6,6 +6,8 @@ import Dashboard from './views/Dashboard.vue'
 import Products from '@/components/Products.vue'
 import Orders from '@/components/Orders.vue'
 import Coupons from '@/components/Coupon.vue'
+import CustomerOrder from '@/components/CustomerOrder.vue'
+
 
 
 
@@ -48,6 +50,18 @@ export default new Router({
           meta: { requiresAuth: true },
         },
       ]
-    }
+      },
+      {
+        path: '/',
+        name: 'Dashboard',
+        component: Dashboard,      
+        children: [
+          {
+            path: 'Customer_order',
+            name: 'CustomerOrder',
+            component: CustomerOrder,           
+          }
+        ]
+      },
   ]
 })

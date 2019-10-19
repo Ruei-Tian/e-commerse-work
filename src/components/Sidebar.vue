@@ -8,20 +8,23 @@
               </a>
           </h6>
           <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <router-link to="/admin/products" class="nav-link">
+              <li class="nav-item" @click.prevent="visibility = 'product'">
+                <router-link to="/admin/products" class="nav-link" 
+                :class="{'active': visibility == 'product'}">
                 <i class="fas fa-box-open"></i>
                   產品列表
                 </router-link>
               </li>   
-              <li class="nav-item">
-                <router-link to="/admin/orders" class="nav-link">
+              <li class="nav-item" @click.prevent=" visibility = 'order'">
+                <router-link to="/admin/orders" class="nav-link"
+                :class="{'active': visibility == 'order'}">
                 <i class="fas fa-clipboard-list mx-1"></i>
                   訂單列表
                 </router-link>
               </li> 
-              <li class="nav-item">
-                <router-link to="/admin/coupons" class="nav-link">
+              <li class="nav-item" @click.prevent=" visibility = 'coupon'">
+                <router-link to="/admin/coupons" class="nav-link"
+                :class="{'active': visibility == 'coupon'}">
                 <i class="fas fa-ticket-alt"></i>
                   優惠券
                 </router-link>
@@ -34,14 +37,25 @@
               </a>
           </h6>
           <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
+              <li class="nav-item" >
+                <router-link to="/Customer_order" class="nav-link">
+                <i class="fas fa-shopping-cart"></i>
                   模擬訂單
-                </a>
+                </router-link>
               </li>              
           </ul>
                      
         </nav>   
+        
     </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      visibility: 'product'
+    };
+  }
+}
+</script>
