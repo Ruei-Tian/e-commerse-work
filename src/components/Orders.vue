@@ -10,8 +10,8 @@
           <th width="100">是否付款</th>
         </thead>
         <tbody>
-         <tr v-for="(item) in orders" :key="item.id"
-              
+         <tr v-for="(item) in sortOrders" :key="item.id"
+             v-if="orders.length"
              :class="{'text-secondary': !item.is_paid}"
              >
            <td>{{ item.create_at | date }}</td>
@@ -31,64 +31,62 @@
            </td>           
            <td>
               <span v-if="item.is_paid" class="text-success">已付款</span>
-              <span v-else class="text-warning">未付款</span>
+              <span v-else class="text-warning">尚未啟用</span>
            </td>
                
           </tr> 
             
         </tbody>
       </table>
+      <Pagination :pagination="paginations"
+                  @renewPage= "getOrders"></Pagination>
     </div>
 </template>
 
 <script>
+import Pagination from './Pagination'
 export default {
     data: function() {
         return{
-           orders:[ {
-            "create_at": 1523539834,
-            "id": "-L9u2EUkQSoEmW7QzGLF",
-            "is_paid": true,
-            "message": "這是範例",
-            "paid_date": 1523539924,
-            "payment_method": "credit_card",
-            "products": [
-            {
-                "id": "L8nBrq8Ym4ARI1Kog4t",
-                "product_id": "-L8moRfPlDZZ2e-1ritQ",
-                "qty": "3",
-                "title":"範例訂單",
-                "unit": "個"
-            }
-            ],
-            "total": 100,
-            "user": {
-            "address": "kaohsiung",
-            "email": "test@gmail.com",
-            "name": "test",
-            "tel": "0912346768"
-            },
-            "num": 1
-      }],
+           orders:{},
+           isNew: false,
            paginations: {},
            isLoading: false, 
-        }
+        };
+    },
+    components: {
+        Pagination
+    },
+    computed: {
+        sortOrders() {
+            const vm = this;
+            let newOrder = [];
+            if(vm.orders.length) {
+                newOrder = vm.orders.sort((a,b) => {
+                    const aIsPaid = a.is_paid ? 1 : 0;
+                    const bIsPaid = b.is_paid ? 1 : 0;
+                    return bIsPaid - aIsPaid;
+
+                })
+            return newOrder;
+            }
+        },
     },
     methods: {
-        // getOrders() {
-        //     const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/orders`
-        //     const vm = this;
-        //     vm.isLoading = true;
-        //     vm.$http.get(api).then((response) => {
-        //         console.log(response.data)
-        //         vm.orders = response.data.orders;
-        //         vm.isLoading = false;
-        //     })
-        // },
+        getOrders(page) {
+            const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/orders?page=${page}`
+            const vm = this;
+            vm.isLoading = true;
+            vm.$http.get(api).then((response) => {
+                console.log(response.data)
+                vm.orders = response.data.orders;
+                vm.isLoading = false;
+            })
+        },
 
     },
     created() {
-        // this.getOrders();
+        this.getOrders();
     },
 }
 </script>

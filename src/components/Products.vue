@@ -37,7 +37,8 @@
             
         </tbody>    
       </table> 
-       <Pagination :pagination='paginations' @renewPage = "getProducts"></Pagination>
+       <Pagination :pagination='paginations' 
+                   @renewPage = "getProducts"></Pagination>
       <!-- Modal -->
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
